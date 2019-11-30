@@ -3,6 +3,9 @@ const app = express();
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 require("./db/db.js");
 
 app.get("/", (req, res) => res.send("Hello world!"));
