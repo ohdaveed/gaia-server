@@ -5,7 +5,7 @@ const User = require("../models/User");
 router.get("/test", (req, res) => res.send("user route testing!"));
 
 // @route GET api/users
-// @description Get all books
+// @description Get all users
 // @access Public
 router.get("/", (req, res) => {
 	User.find()
@@ -36,7 +36,7 @@ router.post("/", (req, res) => {
 });
 
 // @route GET api/users/:id
-// @description Update book
+// @description Update user
 // @access Public
 router.put("/:id", (req, res) => {
 	User.findByIdAndUpdate(req.params.id, req.body)
@@ -46,15 +46,13 @@ router.put("/:id", (req, res) => {
 		);
 });
 
-// @route GET api/books/:id
+// @route GET api/users/:id
 // @description Delete book by id
 // @access Public
 router.delete("/:id", (req, res) => {
 	User.findByIdAndRemove(req.params.id, req.body)
 		.then((user) => res.json({ mgs: "User entry deleted successfully" }))
-		.catch((err) => res.status(404).json({ error: "No such book" }));
+		.catch((err) => res.status(404).json({ error: "No such user" }));
 });
-
-module.exports = router;
 
 module.exports = router;
