@@ -14,6 +14,31 @@ const storage = multer.diskStorage({
 	}
 });
 
+// @route GET api/photos
+// @description Get all photos
+// @access Public
+router.get("/", (req, res) => {
+	Photo.find()
+		.then((photo) => res.json(photo))
+		.catch((err) =>
+			res.status(404).json({ nophotosfound: "No photos found" })
+		);
+});
+
+// @route GET api/photos/:id
+// @description Get single photo by id
+// @access Public
+router.get("/:id", (req, res) => {
+	Photo.findById(req.params.id)
+		.then((photo) => res.json(photo))
+		.catch((err) =>
+			res.status(404).json({ noPhotofound: "No Photo found" })
+		);
+});
+
+// @route POST api/media
+// @description Post a photo
+// @access Public
 router.post("/upload", (req, res, next) => {
 	const upload = multer({ storage }).single("image");
 	upload(req, res, function(err) {
@@ -35,7 +60,6 @@ router.post("/upload", (req, res, next) => {
 		const uniqueFilename = new Date().toISOString();
 
 		let dbimage;
-
 		cloudinary.uploader.upload(
 			path,
 			{ public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
@@ -45,19 +69,24 @@ router.post("/upload", (req, res, next) => {
 				// remove file from server
 				const fs = require("fs");
 				fs.unlinkSync(path);
-
-				dbimage = image;
 				// return image details
-				res.json(image);
+				// res.json(image);
+				console.log(image.url);
+
+				const dbimage = { url: image.url, name: image.filename };
+
+				Photo.create(dbimage)
+					.then((photo) =>
+						res.json({ msg: "photo url added successfully" })
+					)
+					.catch((err) =>
+						res
+							.status(400)
+							.json({ error: "Unable to add this photo url" })
+					);
 			}
 		);
 	});
 });
-
-// Photo.create(req.body)
-// 	.then((photo) => res.json({ msg: "Photo added to mongodb" }))
-// 	.catch((err) =>
-// 		res.status(400).json({ error: "Unable to add photo object" })
-// 	);
 
 module.exports = router;

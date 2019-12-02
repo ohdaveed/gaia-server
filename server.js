@@ -20,8 +20,8 @@ app.use(methodOverride("_method"));
 const usersController = require("./controllers/users");
 app.use("/users", usersController);
 
-const mediaController = require("./controllers/media");
-app.use("/media", mediaController);
+const photosController = require("./controllers/photos");
+app.use("/photos", photosController);
 
 app.get("/", (req, res) => res.send("Hello world!"));
 
