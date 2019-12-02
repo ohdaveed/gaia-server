@@ -23,6 +23,9 @@ app.use("/users", usersController);
 const photosController = require("./controllers/photos");
 app.use("/photos", photosController);
 
+const plantsController = require("./controllers/plants");
+app.use("/plants", plantsController);
+
 app.get("/", (req, res) => res.send("Hello world!"));
 
 const port = process.env.PORT;

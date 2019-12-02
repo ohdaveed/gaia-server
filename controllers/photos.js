@@ -14,6 +14,8 @@ const storage = multer.diskStorage({
 	}
 });
 
+router.get("/test", (req, res) => res.send("photo route testing!"));
+
 // @route GET api/photos
 // @description Get all photos
 // @access Public
