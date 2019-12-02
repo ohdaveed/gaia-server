@@ -89,4 +89,13 @@ router.post("/upload", (req, res, next) => {
 	});
 });
 
+// @route GET api/photos/:id
+// @description Delete photo by id
+// @access Public
+router.delete("/:id", (req, res) => {
+	Photo.findByIdAndRemove(req.params.id, req.body)
+		.then((photo) => res.json({ mgs: "Photo entry deleted successfully" }))
+		.catch((err) => res.status(404).json({ error: "No such photo" }));
+});
+
 module.exports = router;

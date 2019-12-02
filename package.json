@@ -10,7 +10,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ohdaveed/gaia-backend.git"
+		"url": "git+https://github.com/ohdaveed/gaia-server.git"
 	},
 	"keywords": [
 		"server",
@@ -21,9 +21,9 @@
 	"author": "David Arrizon",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/ohdaveed/gaia-backend/issues"
+		"url": "https://github.com/ohdaveed/gaia-server/issues"
 	},
-	"homepage": "https://github.com/ohdaveed/gaia-backend#readme",
+	"homepage": "https://github.com/ohdaveed/gaia-server#readme",
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.19.0",
