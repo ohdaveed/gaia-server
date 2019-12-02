@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Photo = require("../models/Photo");
 
 // MULTER
 const multer = require("multer");
@@ -14,7 +15,7 @@ const storage = multer.diskStorage({
 });
 
 router.post("/upload", (req, res, next) => {
-	const upload = multer({ storage }).single("name-of-input-key");
+	const upload = multer({ storage }).single("image");
 	upload(req, res, function(err) {
 		if (err) {
 			return res.send(err);
@@ -33,6 +34,8 @@ router.post("/upload", (req, res, next) => {
 		const path = req.file.path;
 		const uniqueFilename = new Date().toISOString();
 
+		let dbimage;
+
 		cloudinary.uploader.upload(
 			path,
 			{ public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
@@ -42,11 +45,19 @@ router.post("/upload", (req, res, next) => {
 				// remove file from server
 				const fs = require("fs");
 				fs.unlinkSync(path);
+
+				dbimage = image;
 				// return image details
 				res.json(image);
 			}
 		);
 	});
 });
+
+// Photo.create(req.body)
+// 	.then((photo) => res.json({ msg: "Photo added to mongodb" }))
+// 	.catch((err) =>
+// 		res.status(400).json({ error: "Unable to add photo object" })
+// 	);
 
 module.exports = router;

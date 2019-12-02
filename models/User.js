@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Photo = require("./Photo");
 
 const UserSchema = new Schema({
 	username: {
@@ -17,7 +18,13 @@ const UserSchema = new Schema({
 	date: {
 		type: Date,
 		default: Date.now
-	}
+	},
+	photos: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: Photo
+		}
+	]
 });
 
 const User = mongoose.model("User", UserSchema);

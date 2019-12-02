@@ -20,9 +20,6 @@ app.use(methodOverride("_method"));
 const usersController = require("./controllers/users");
 app.use("/users", usersController);
 
-const photosController = require("./controllers/photos");
-app.use("/photos", photosController);
-
 const mediaController = require("./controllers/media");
 app.use("/media", mediaController);
 
