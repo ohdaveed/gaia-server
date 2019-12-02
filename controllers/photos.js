@@ -32,7 +32,7 @@ router.get("/", (req, res) => {
 // @access Public
 router.get("/:id", (req, res) => {
 	Photo.findById(req.params.id)
-		.then((photo) => res.json(photo))
+		.then((photo) => res.json(photo.url))
 		.catch((err) =>
 			res.status(404).json({ noPhotofound: "No Photo found" })
 		);
