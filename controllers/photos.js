@@ -13,19 +13,20 @@ router.post("/upload", async (req, res) => {
 			});
 		} else {
 			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-			let avatar = req.files.avatar;
+			let image = req.files.image;
 
 			//Use the mv() method to place the file in upload directory (i.e. "uploads")
-			avatar.mv("./uploads/" + avatar.name);
+			image.mv("./uploads/" + image.name);
 
 			//send response
 			res.send({
 				status: true,
 				message: "File is uploaded",
 				data: {
-					name: avatar.name,
-					mimetype: avatar.mimetype,
-					size: avatar.size
+					name: image.name,
+					mimetype: image.mimetype,
+					size: image.size,
+					data: image.data
 				}
 			});
 		}
