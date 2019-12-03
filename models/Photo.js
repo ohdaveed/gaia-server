@@ -9,6 +9,8 @@ const photoSchema = new Schema({
 	},
 	url: String,
 	name: String,
+	lat: String,
+	long: String,
 	date_created: { type: Date, default: Date.now }
 });
 

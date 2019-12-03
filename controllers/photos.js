@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Photo = require("../models/Photo");
+const axios = require("axios");
 
 // MULTER
 const multer = require("multer");
@@ -57,6 +58,18 @@ router.post("/upload", (req, res, next) => {
 			api_key: process.env.CLOUDINARY_API_KEY,
 			api_secret: process.env.CLOUDINARY_SECRET
 		});
+
+		const geourl =
+			"https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
+
+		console.log(geourl);
+
+		const location = axios.get(geourl).then(function(response) {
+			console.log(response.data);
+		});
+
+		console.log("\n this is my location");
+		console.log(location);
 
 		const path = req.file.path;
 		const uniqueFilename = new Date().toISOString();
