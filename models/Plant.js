@@ -9,8 +9,8 @@ const plantSchema = new Schema({
 	common_name: [String],
 	scientific_name: String,
 	url: [String],
-	lattitude: Number,
-	longitude: Number,
+	lat: Number,
+	long: Number,
 	score: Number
 });
 

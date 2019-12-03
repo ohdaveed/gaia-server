@@ -11,8 +11,16 @@ router.get("/test", (req, res) => res.send("plant route testing!"));
 // @description identify plant
 // @access Public
 router.get("/:id", (req, res) => {
+	let lat;
+	let long;
 	Photo.findById(req.params.id)
 		.then((photo) => {
+			lat = photo.lat;
+			console.log("\n this is lat from the photo document");
+			console.log(photo.lat);
+			console.log("\n this is long from the photo document");
+			console.log(photo.long);
+			long = photo.long;
 			let url = photo.url;
 			const encodedurl = encode(url);
 			let identifyurl =
@@ -25,15 +33,19 @@ router.get("/:id", (req, res) => {
 			return identifyurl;
 		})
 		.then((identifyurl) => {
+			console.log("\n got to the http request");
+			console.log(long);
 			const identified = axios.get(identifyurl).then((response) => {
+				// console.log("\n this is my response");
+				// console.log(response);
 				return response;
 			});
 			return identified;
 		})
 		.then((response) => {
 			const data = response.data;
-			console.log("this is data");
-			console.log(data);
+			// console.log("\n this is data");
+			// console.log(data);
 			return data;
 		})
 		.then((data) => {
@@ -42,14 +54,21 @@ router.get("/:id", (req, res) => {
 				scientific_name:
 					data.results[0].species.scientificNameWithoutAuthor,
 				url: data.query.images,
-				score: data.results[0].score
+				score: data.results[0].score,
+				lat: lat,
+				long: long
 			};
-			Plant.create(plantdb);
+			console.log(lat);
+			console.log(long);
+			Plant.create(plantdb).then((data) => {
+				res.json(data);
+			});
 		})
-		.then((data) => res.json(data))
-		.catch((err) =>
-			res.status(404).json({ noPlantfound: "No Plant found" })
-		);
+		// .then((data) => res.json(data))
+		.catch((err) => {
+			console.log(err);
+			res.status(404).json({ noPlantfound: "No Plant found" });
+		});
 });
 
 module.exports = router;
