@@ -75,12 +75,8 @@ router.post("/upload", (req, res, next) => {
 		// fetchData();
 		let long, lat;
 		let location = axios.get(geourl).then(function(response) {
-			console.log("\n latitude");
-			console.log(response.data.latitude);
 			lat = response.data.latitude;
 			long = response.data.longitude;
-			console.log("\n longitude");
-			console.log(response.data.longitude);
 		});
 
 		const path = req.file.path;
