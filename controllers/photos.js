@@ -32,7 +32,7 @@ router.get("/", (req, res) => {
 // @access Public
 router.get("/:id", (req, res) => {
 	Photo.findById(req.params.id)
-		.then((photo) => res.json(photo.url))
+		.then((photo) => res.json(photo))
 		.catch((err) =>
 			res.status(404).json({ noPhotofound: "No Photo found" })
 		);
@@ -75,7 +75,10 @@ router.post("/upload", (req, res, next) => {
 				// res.json(image);
 				console.log(image.url);
 
-				const dbimage = { url: image.url, name: image.filename };
+				const dbimage = {
+					url: image.url,
+					name: image.original_filename
+				};
 
 				Photo.create(dbimage)
 					.then((photo) =>

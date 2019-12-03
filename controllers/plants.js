@@ -3,6 +3,7 @@ const router = express.Router();
 const Photo = require("../models/Photo");
 const { encode, decode } = require("url-encode-decode");
 const axios = require("axios");
+const Plant = require("../models/Plant");
 
 router.get("/test", (req, res) => res.send("plant route testing!"));
 
@@ -34,6 +35,16 @@ router.get("/:id", (req, res) => {
 			console.log("this is data");
 			console.log(data);
 			return data;
+		})
+		.then((data) => {
+			const plantdb = {
+				common_name: data.results[0].species.commonNames,
+				scientific_name:
+					data.results[0].species.scientificNameWithoutAuthor,
+				url: data.query.images,
+				score: data.results[0].score
+			};
+			Plant.create(plantdb);
 		})
 		.then((data) => res.json(data))
 		.catch((err) =>

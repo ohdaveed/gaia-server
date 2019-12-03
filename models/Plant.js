@@ -6,14 +6,14 @@ const plantSchema = new Schema({
 		type: mongoose.Schema.Types.ObjectID,
 		ref: "User"
 	},
-	common_name: { type: String },
-	scientific_name: { type: String },
-	url: { type: String },
-	caption: { type: String },
-	lattitude: { type: Number },
-	longitude: { type: Number }
+	common_name: [String],
+	scientific_name: String,
+	url: [String],
+	lattitude: Number,
+	longitude: Number,
+	score: Number
 });
 
-const Photo = mongoose.model("Photos", photoSchema);
+const Plant = mongoose.model("Plants", plantSchema);
 
-module.exports = Photo;
+module.exports = Plant;
