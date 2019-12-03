@@ -64,12 +64,24 @@ router.post("/upload", (req, res, next) => {
 
 		console.log(geourl);
 
-		const location = axios.get(geourl).then(function(response) {
-			console.log(response.data);
-		});
+		// const fetchData = async () => {
+		// 	console.log("fetching...");
 
-		console.log("\n this is my location");
-		console.log(location);
+		// 	const result = await axios.get(geourl);
+
+		// 	return result.data;
+		// };
+
+		// fetchData();
+		let long, lat;
+		let location = axios.get(geourl).then(function(response) {
+			console.log("\n latitude");
+			console.log(response.data.latitude);
+			lat = response.data.latitude;
+			long = response.data.longitude;
+			console.log("\n longitude");
+			console.log(response.data.longitude);
+		});
 
 		const path = req.file.path;
 		const uniqueFilename = new Date().toISOString();
@@ -84,13 +96,12 @@ router.post("/upload", (req, res, next) => {
 				// remove file from server
 				const fs = require("fs");
 				fs.unlinkSync(path);
-				// return image details
-				// res.json(image);
-				console.log(image.url);
 
 				const dbimage = {
 					url: image.url,
-					name: image.original_filename
+					name: image.original_filename,
+					lat: lat,
+					long: long
 				};
 
 				Photo.create(dbimage)
