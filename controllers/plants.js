@@ -7,6 +7,17 @@ const Plant = require("../models/Plant");
 
 router.get("/test", (req, res) => res.send("plant route testing!"));
 
+// @route GET api/users
+// @description Get all users
+// @access Public
+router.get("/", (req, res) => {
+	Plant.find()
+		.then((plants) => res.json(plants))
+		.catch((err) =>
+			res.status(404).json({ noplantsfound: "No Plants found" })
+		);
+});
+
 // @route GET api/plants
 // @description identify plant
 // @access Public
