@@ -11,7 +11,8 @@ const plantSchema = new Schema({
 	url: [String],
 	lat: Number,
 	long: Number,
-	score: Number
+	score: Number,
+	date_created: { type: Date, default: Date.now }
 });
 
 const Plant = mongoose.model("Plants", plantSchema);
