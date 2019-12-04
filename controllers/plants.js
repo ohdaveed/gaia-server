@@ -16,10 +16,6 @@ router.get("/:id", (req, res) => {
 	Photo.findById(req.params.id)
 		.then((photo) => {
 			lat = photo.lat;
-			console.log("\n this is lat from the photo document");
-			console.log(photo.lat);
-			console.log("\n this is long from the photo document");
-			console.log(photo.long);
 			long = photo.long;
 			let url = photo.url;
 			const encodedurl = encode(url);
@@ -33,8 +29,6 @@ router.get("/:id", (req, res) => {
 			return identifyurl;
 		})
 		.then((identifyurl) => {
-			console.log("\n got to the http request");
-			console.log(long);
 			const identified = axios.get(identifyurl).then((response) => {
 				// console.log("\n this is my response");
 				// console.log(response);
@@ -58,8 +52,6 @@ router.get("/:id", (req, res) => {
 				lat: lat,
 				long: long
 			};
-			console.log(lat);
-			console.log(long);
 			Plant.create(plantdb).then((data) => {
 				res.json(data);
 			});
