@@ -39,7 +39,7 @@ router.get("/:id", (req, res) => {
 		);
 });
 
-// @route POST api/media
+// @route POST api/photos
 // @description Post a photo
 // @access Public
 router.post("/upload", (req, res, next) => {
@@ -64,15 +64,6 @@ router.post("/upload", (req, res, next) => {
 
 		console.log(geourl);
 
-		// const fetchData = async () => {
-		// 	console.log("fetching...");
-
-		// 	const result = await axios.get(geourl);
-
-		// 	return result.data;
-		// };
-
-		// fetchData();
 		let long, lat;
 		let location = axios.get(geourl).then(function(response) {
 			lat = parseFloat(response.data.latitude);
