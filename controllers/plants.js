@@ -63,4 +63,13 @@ router.get("/:id", (req, res) => {
 		});
 });
 
+// @route GET api/plants/:id
+// @description Delete plant by id
+// @access Public
+router.delete("/:id", (req, res) => {
+	Plant.findByIdAndRemove(req.params.id, req.body)
+		.then((plant) => res.json({ mgs: "Plant entry deleted successfully" }))
+		.catch((err) => res.status(404).json({ error: "No such plant" }));
+});
+
 module.exports = router;
