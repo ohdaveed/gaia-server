@@ -82,6 +82,31 @@ router.post("/register", (req, res, next) => {
 	});
 });
 
+//@route POST api/users/login
+// @description login user
+
+router.post("/login", (req, res, next) => {
+	User.findOne({ username: req.body.username }, (err, foundUser) => {
+		// console.log("\nthis is user we're finding in login")
+		console.log(foundUser);
+		if (foundUser) {
+			if (bcrypt.compareSync(req.body.password, foundUser.password)) {
+				req.session.message = "";
+				req.session.username = req.body.username;
+				req.session.logged = true;
+				req.session.id = foundUser._id;
+				req.session.user = foundUser;
+
+				res.json({ msg: "welcome" });
+			} else {
+				res.json({ msg: "you shall not pass!" });
+			}
+		} else {
+			res.json({ msg: "you shall not pass!" });
+		}
+	});
+});
+
 // @route PUT api/users/logout
 // @description logout user
 
