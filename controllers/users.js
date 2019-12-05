@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 
 router.get("/test", (req, res) => res.send("user route testing!"));
 
@@ -53,6 +54,45 @@ router.delete("/:id", (req, res) => {
 	User.findByIdAndRemove(req.params.id, req.body)
 		.then((user) => res.json({ mgs: "User entry deleted successfully" }))
 		.catch((err) => res.status(404).json({ error: "No such user" }));
+});
+
+// @route POST api/users/register
+// @description register user
+
+router.post("/register", (req, res, next) => {
+	const password = req.body.password;
+	const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
+	const userDbEntry = {};
+
+	userDbEntry.username = req.body.username;
+	userDbEntry.email = req.body.email;
+	userDbEntry.password = passwordHash;
+
+	User.create(userDbEntry, (err, user) => {
+		if (err) {
+			next(err);
+		}
+
+		req.session.id = user.id;
+		req.session.username = user.username;
+		req.session.logged = true;
+
+		res.json(userDbEntry);
+	});
+});
+
+// @route PUT api/users/logout
+// @description logout user
+
+router.get("/logout", (req, res) => {
+	req.session.destroy(function(err) {
+		if (err) {
+		} else {
+			req.session.logout = "y'all come back now!";
+			res.redirect("/");
+		}
+	});
 });
 
 module.exports = router;
