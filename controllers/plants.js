@@ -4,6 +4,7 @@ const Photo = require("../models/Photo");
 const { encode, decode } = require("url-encode-decode");
 const axios = require("axios");
 const Plant = require("../models/Plant");
+const User = require("../models/User");
 
 router.get("/test", (req, res) => res.send("plant route testing!"));
 
@@ -63,8 +64,15 @@ router.get("/:id", (req, res) => {
 				lat: lat,
 				long: long
 			};
-			Plant.create(plantdb).then((data) => {
-				res.json(data);
+			Plant.create(plantdb).then((plant) => {
+				User.findById(req.session.user._id).then((user) => {
+					user.plants.push(plant.id);
+					user.save().then((data) => {
+						res.json({
+							msg: "plant added successfully"
+						});
+					});
+				});
 			});
 		})
 		// .then((data) => res.json(data))
