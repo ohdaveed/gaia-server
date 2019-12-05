@@ -94,12 +94,9 @@ router.post("/login", (req, res, next) => {
 				req.session.message = "";
 				req.session.username = req.body.username;
 				req.session.logged = true;
-				console.log("foundUser._id >>> ", foundUser._id);
 				req.session.id = foundUser._id;
 				req.session.user = foundUser;
-				console.log("foundUser >>> ", foundUser);
-				console.log("\nhere is the session after we log in");
-				console.log(req.session);
+
 				res.json({ msg: "welcome" });
 			} else {
 				res.json({ msg: "you shall not pass!" });

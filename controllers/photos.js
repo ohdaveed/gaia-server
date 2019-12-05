@@ -52,9 +52,6 @@ router.post("/upload", (req, res, next) => {
 			if (err) {
 				return res.send(err);
 			}
-			// res.json(req.file);
-			console.log("file uploaded to server");
-			console.log(req.file);
 
 			const cloudinary = require("cloudinary").v2;
 			cloudinary.config({
@@ -67,8 +64,6 @@ router.post("/upload", (req, res, next) => {
 				"https://api.ipgeolocation.io/ipgeo?apiKey=" +
 				process.env.GEO_API;
 
-			console.log(geourl);
-
 			let long, lat;
 			let location = axios.get(geourl).then(function(response) {
 				lat = parseFloat(response.data.latitude);
@@ -78,9 +73,6 @@ router.post("/upload", (req, res, next) => {
 			const path = req.file.path;
 			const uniqueFilename = new Date().toISOString();
 
-			console.log("does it get this far?");
-			console.log(path);
-
 			let dbimage;
 			cloudinary.uploader
 				.upload(
@@ -88,8 +80,6 @@ router.post("/upload", (req, res, next) => {
 					{ public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
 					function(err, image) {
 						if (err) return res.send(err);
-						console.log("file uploaded to Cloudinary");
-						// remove file from server
 						const fs = require("fs");
 						fs.unlinkSync(path);
 
@@ -102,8 +92,6 @@ router.post("/upload", (req, res, next) => {
 
 						Photo.create(dbimage).then((photo) => {
 							User.findById(req.session.user._id).then((user) => {
-								console.log("\n here's the user");
-								console.log(user);
 								user.photos.push(photo.id);
 								user.save().then((data) => {
 									res.json({
