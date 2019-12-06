@@ -69,7 +69,7 @@ router.get("/:id", (req, res) => {
 					user.plants.push(plant.id);
 					user.save().then((data) => {
 						res.json({
-							msg: "plant added successfully"
+							msg: "plant identified successfully"
 						});
 					});
 				});
