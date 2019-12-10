@@ -3,7 +3,9 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
-router.get("/test", (req, res) => res.send("user route testing!"));
+router.get("/test", (req, res) => {
+	console.log(req.session)
+	res.send("user route testing!")})
 
 // @route GET api/users
 // @description Get all users
@@ -60,6 +62,9 @@ router.delete("/:id", (req, res) => {
 // @description register user
 
 router.post("/register", (req, res, next) => {
+	console.log("IM HITTING THE ROUTE");
+	console.log(req.body.username);
+
 	const password = req.body.password;
 	const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
@@ -73,11 +78,11 @@ router.post("/register", (req, res, next) => {
 		if (err) {
 			next(err);
 		}
-
-		req.session.id = user.id;
+		req.session.id = user._id;
 		req.session.username = user.username;
 		req.session.logged = true;
 
+		console.log(userDbEntry);
 		res.json(userDbEntry);
 	});
 });
@@ -86,8 +91,10 @@ router.post("/register", (req, res, next) => {
 // @description login user
 
 router.post("/login", (req, res, next) => {
+	console.log("IM HITTING THE ROUTE");
+	console.log(req.body.username);
 	User.findOne({ username: req.body.username }, (err, foundUser) => {
-		// console.log("\nthis is user we're finding in login")
+		console.log("\nthis is user we're finding in login");
 		console.log(foundUser);
 		if (foundUser) {
 			if (bcrypt.compareSync(req.body.password, foundUser.password)) {
@@ -97,12 +104,12 @@ router.post("/login", (req, res, next) => {
 				req.session.id = foundUser._id;
 				req.session.user = foundUser;
 
-				res.json({ msg: "welcome" });
+				res.status(200).json(foundUser);
 			} else {
-				res.json({ msg: "you shall not pass!" });
+				res.status(401).json({ msg: "you shall not pass!" });
 			}
 		} else {
-			res.json({ msg: "you shall not pass!" });
+			res.status(401).json({ msg: "you shall not pass!" });
 		}
 	});
 });
