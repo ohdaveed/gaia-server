@@ -11,7 +11,7 @@ const cors = require("cors");
 
 const passport = require("passport");
 const users = require("./routes/api/users");
-
+const photos = require("./routes/api/photos")
 //DB Config
 require("./db/db.js");
 
@@ -26,13 +26,13 @@ app.use(
 	})
 );
 
-app.use(
-	session({
-		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false
-	})
-);
+// app.use(
+// 	session({
+// 		secret: process.env.SESSION_SECRET,
+// 		resave: false,
+// 		saveUninitialized: false
+// 	})
+// );
 
 //BodyParser
 app.use(methodOverride("_method"));
@@ -54,6 +54,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 // Routes
 app.use("/api/users", users);
+app.use("/api/photos", photos)
 
 const port = process.env.PORT;
  // process.env.port is Heroku's port if you choose to deploy the app there
