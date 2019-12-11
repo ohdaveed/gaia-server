@@ -6,6 +6,7 @@ const Photo = require("../../models/Photo");
 const axios = require("axios");
 const User = require("../../models/User");
 const keys = require("../../config/keys");
+
 const passport = require("passport")
 
 // MULTER
@@ -24,13 +25,9 @@ router.get("/", passport.authenticate('jwt', {session:false}), function (req, re
    res.send("photo route testing!");
 });
 
+router.post("/upload", passport.authenticate('jwt', {session:false}), function(req, res, next){
 
-
-
-router.post("/upload", (req, res, next) => {
-    console.log("\nhere's the session in photo upload");
-    console.log(req.session);
-    if (req.session.logged === true) {
+        
         const upload = multer({ storage }).single("image");
         upload(req, res, function(err) {
             if (err) {
@@ -42,7 +39,7 @@ router.post("/upload", (req, res, next) => {
                 cloud_name: process.env.CLOUD_NAME,
                 api_key: process.env.CLOUDINARY_API_KEY,
                 api_secret: process.env.CLOUDINARY_SECRET
-            });
+            })
 
             const geourl =
                 "https://api.ipgeolocation.io/ipgeo?apiKey=" +
@@ -58,8 +55,7 @@ router.post("/upload", (req, res, next) => {
             const uniqueFilename = new Date().toISOString();
 
             let dbimage;
-            cloudinary.uploader
-                .upload(
+            cloudinary.uploader.upload(
                     path,
                     { public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
                     function(err, image) {
@@ -74,8 +70,11 @@ router.post("/upload", (req, res, next) => {
                             long: long
                         };
 
+
+    
                         Photo.create(dbimage).then((photo) => {
-                            User.findById(req.session.user._id).then((user) => {
+                            
+                            User.findById(req.user.id).then((user) => {
                                 user.photos.push(photo.id);
                                 user.save().then((data) => {
                                     res.json({
@@ -84,18 +83,8 @@ router.post("/upload", (req, res, next) => {
                                 });
                             });
                         });
-                    }
-                )
-
-                .catch((err) =>
-                    res
-                        .status(400)
-                        .json({ error: "Unable to add this photo url" })
-                );
-        });
-    } else {
-        res.status(401).json({ error: "You must be logged in" });
-    }
-});
-
+                    }).catch((err) =>
+                    res.status(400).json({ error: "Unable to add this photo url" }))
+                })
+            })
 module.exports = router

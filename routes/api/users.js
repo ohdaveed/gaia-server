@@ -80,6 +80,7 @@ const password = req.body.password;
           (err, token) => {
             res.json({
               success: true,
+              payload,
               token: "Bearer " + token
             });
           }
