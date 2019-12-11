@@ -7,7 +7,7 @@ mongoose.connect(connectionString, {
 	useUnifiedTopology: true,
 	useCreateIndex: true,
 	useFindAndModify: false
-});
+})
 
 mongoose.connection.on("connected", () => {
 	console.log(`Mongoose connected to ${connectionString}`);
