@@ -75,9 +75,8 @@ router.post("/upload", passport.authenticate('jwt', {session:false}), function(r
                             User.findById(req.user.id).then((user) => {
                                 user.photos.push(photo.id);
                                 user.save().then((data) => {
-                                    res.json({
-                                        msg: "photo url added successfully"
-                                    });
+                                    res.json(dbimage
+                                    );
                                 });
                             });
                         });

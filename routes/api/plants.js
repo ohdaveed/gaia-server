@@ -64,9 +64,7 @@ router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, ne
 				User.findById(req.user.id).then((user) => {
 					user.plants.push(plant.id);
 					user.save().then((data) => {
-						res.json({
-							msg: "plant identified successfully"
-						});
+						res.json(data);
 					});
 				});
 			});
