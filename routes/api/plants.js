@@ -20,7 +20,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), function(
 router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, next) => {
 
   	let lat;
-	let long;
+    let long;
 	Photo.findById(req.params.id)
 		.then((photo) => {
 			lat = photo.lat;
@@ -58,7 +58,8 @@ router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, ne
 				url: data.query.images,
 				score: data.results[0].score,
 				lat: lat,
-				long: long
+                long: long,
+                username: req.user.username
 			};
 			Plant.create(plantdb).then((plant) => {
 				User.findById(req.user.id).then((user) => {
@@ -74,4 +75,20 @@ router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, ne
 			res.status(404).json({ noPlantfound: "No Plant found" });
 		});
 });
+
+//all photos by a user
+router.get(
+    "/all",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        const user = { username: req.user.username };
+
+        Plant.find()
+            .where(user)
+            .then((plants) => res.json(plants))
+            .catch((err) =>
+                res.status(404).json({ noplantsfound: "No plants found" })
+            );
+    }
+);
 module.exports = router;

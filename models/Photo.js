@@ -10,6 +10,7 @@ const photoSchema = new Schema({
 	name: String,
 	lat: Number,
 	long: Number,
+	username: String,
 	date_created: { type: Date, default: Date.now }
 });
 

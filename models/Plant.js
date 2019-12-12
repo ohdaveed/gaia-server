@@ -12,6 +12,7 @@ const plantSchema = new Schema({
 	lat: Number,
 	long: Number,
 	score: Number,
+	username: String,
 	date_created: { type: Date, default: Date.now }
 });
 

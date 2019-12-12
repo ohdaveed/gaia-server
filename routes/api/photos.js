@@ -21,6 +21,23 @@ const storage = multer.diskStorage({
     }
 });
 
+// gets all photos from a user
+router.get(
+    "/all",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        const user = { username: req.user.username };
+
+        Photo.find()
+            .where(user)
+            .then((photos) => res.json(photos))
+            .catch((err) =>
+                res.status(404).json({ nophotosfound: "No photos found" })
+            );
+    }
+);
+
+
 router.get("/", passport.authenticate('jwt', {session:false}), function (req, res){
    res.send("photo route testing!");
 });
@@ -68,7 +85,8 @@ router.post("/upload", passport.authenticate('jwt', {session:false}), function(r
                             url: image.url,
                             name: image.original_filename,
                             lat: lat,
-                            long: long
+                            long: long,
+                            username: req.user.username
                         };
 
                         Photo.create(dbimage).then((photo) => {
