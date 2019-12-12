@@ -25,7 +25,7 @@ router.get("/", passport.authenticate('jwt', {session:false}), function (req, re
    res.send("photo route testing!");
 });
 
-router.post("/upload", passport.authenticate('jwt', {session:false}), function(req, res, next){
+router.post("/upload", passport.authenticate('jwt', {session:false}), function(req, res){
 
         
         const upload = multer({ storage }).single("image");
@@ -70,6 +70,8 @@ router.post("/upload", passport.authenticate('jwt', {session:false}), function(r
                             long: long
                         };
 
+                        
+
 
     
                         Photo.create(dbimage).then((photo) => {
@@ -83,8 +85,7 @@ router.post("/upload", passport.authenticate('jwt', {session:false}), function(r
                                 });
                             });
                         });
-                    }).catch((err) =>
-                    res.status(400).json({ error: "Unable to add this photo url" }))
+                    })
                 })
             })
 module.exports = router

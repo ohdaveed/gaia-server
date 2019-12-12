@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
+const passport = require("passport");
+
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
@@ -93,5 +95,20 @@ const password = req.body.password;
     });
   });
 });
+
+// all photos obj ids by user
+let array;
+router.get("/photos", passport.authenticate('jwt', {session:false}), (req, res, next) => {
+    User.findById(req.user.id)
+        .then((user) => {
+            const arr = user.photos;
+        })
+        .then((arr) => {
+          console.log(arr)}).catch((err) => {
+            res.status(404).json({ noPlantfound: "No Plant found" });
+        });// .then((d
+})     
+        
+
 
 module.exports = router

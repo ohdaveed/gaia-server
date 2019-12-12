@@ -20,12 +20,11 @@ const UserSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
-	photos: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: Photo
-		}
+	photos: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: Photo}
 	],
+	url: [String],
 	plants: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
