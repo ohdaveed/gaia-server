@@ -55,6 +55,7 @@ router.post("/upload", passport.authenticate('jwt', {session:false}), function(r
             const uniqueFilename = new Date().toISOString();
 
             let dbimage;
+            let imgurl
             cloudinary.uploader.upload(
                     path,
                     { public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
@@ -70,12 +71,7 @@ router.post("/upload", passport.authenticate('jwt', {session:false}), function(r
                             long: long
                         };
 
-                        
-
-
-    
                         Photo.create(dbimage).then((photo) => {
-                            
                             User.findById(req.user.id).then((user) => {
                                 user.photos.push(photo.id);
                                 user.save().then((data) => {

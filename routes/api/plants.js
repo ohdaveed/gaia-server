@@ -18,62 +18,62 @@ router.get("/", passport.authenticate("jwt", { session: false }), function(
 });
 
 router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, next) => {
-    let lat;
-    let long;
-    
-    Photo.findById(req.params).then((photo) => {
-            lat = photo.lat;
-            long = photo.long;
-            let url = photo.url;
-            const encodedurl = encode(url);
-            let identifyurl =
-                "https://my-api.plantnet.org/v2/identify/all?" +
-                "api-key=" +
-                process.env.PLANET_NET_API +
-                "&images=" +
-                encodedurl +
-                "&organs=leaf";
-            return identifyurl;
-        })
-        .then((identifyurl) => {
-            const identified = axios.get(identifyurl).then((response) => {
-                console.log("\n this is my response");
-                console.log(response);
-                return response;
-            });
-            return identified;
-        })
-        .then((response) => {
-            const data = response.data;
-            console.log("\n this is data");
-            console.log(data);
-            return data;
-        })
-        .then((data) => {
-            const plantdb = {
-                common_name: data.results[0].species.commonNames,
-                scientific_name:
-                    data.results[0].species.scientificNameWithoutAuthor,
-                url: data.query.images,
-                score: data.results[0].score,
-                lat: lat,
-                long: long
-            };
-            Plant.create(plantdb).then((plant) => {
-                User.findById(req.session.user._id).then((user) => {
-                    user.plants.push(plant.id);
-                    user.save().then((data) => {
-                        res.json({
-                            msg: "plant identified successfully"
-                        });
-                    });
-                });
-            });
-        })
-        .catch((err) => {
-            res.status(404).json({ noPlantfound: "No Plant found" });
-        });// .then((data) => res.json(data))
-        
-}).catch;
 
+  	let lat;
+	let long;
+	Photo.findById(req.params.id)
+		.then((photo) => {
+			lat = photo.lat;
+			long = photo.long;
+			let url = photo.url;
+			const encodedurl = encode(url);
+			let identifyurl =
+				"https://my-api.plantnet.org/v2/identify/all?" +
+				"api-key=" +
+				process.env.PLANET_NET_API +
+				"&images=" +
+				encodedurl +
+				"&organs=leaf";
+			return identifyurl;
+		})
+		.then((identifyurl) => {
+			const identified = axios.get(identifyurl).then((response) => {
+				// console.log("\n this is my response");
+				// console.log(response);
+				return response;
+			});
+			return identified;
+		})
+		.then((response) => {
+			const data = response.data;
+			// console.log("\n this is data");
+			// console.log(data);
+			return data;
+		})
+		.then((data) => {
+			const plantdb = {
+				common_name: data.results[0].species.commonNames,
+				scientific_name:
+					data.results[0].species.scientificNameWithoutAuthor,
+				url: data.query.images,
+				score: data.results[0].score,
+				lat: lat,
+				long: long
+			};
+			Plant.create(plantdb).then((plant) => {
+				User.findById(req.user.id).then((user) => {
+					user.plants.push(plant.id);
+					user.save().then((data) => {
+						res.json({
+							msg: "plant identified successfully"
+						});
+					});
+				});
+			});
+		})
+		// .then((data) => res.json(data))
+		.catch((err) => {
+			res.status(404).json({ noPlantfound: "No Plant found" });
+		});
+});
 module.exports = router;
