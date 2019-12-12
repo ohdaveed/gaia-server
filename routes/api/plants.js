@@ -6,7 +6,7 @@ const axios = require("axios");
 const User = require("../../models/User");
 const keys = require("../../config/keys");
 const Photo = require("../../models/Photo");
-const Plant = require("../../models/Plants");
+const Plant = require("../../models/Plant");
 
 const passport = require("passport");
 
