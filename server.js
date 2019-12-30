@@ -19,7 +19,6 @@ require("./db/db.js");
 
 // Connect to MongoDB
 
-
 app.use(
 	cors({
 		origin: process.env.REACT_APP_API_URL,
