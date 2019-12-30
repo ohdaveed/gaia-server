@@ -1,7 +1,7 @@
 {
 	"name": "gaia-server",
 	"version": "1.0.0",
-	"description": "GA Capstone Project. Backend constructed using MongoDB/Mongoose, Express, & Node",
+	"description": "Backend constructed using MongoDB/Mongoose, Express, & Node",
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
