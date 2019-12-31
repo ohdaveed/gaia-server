@@ -20,7 +20,8 @@ router.get("/", passport.authenticate("jwt", { session: false }), function(
 router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, next) => {
 
   	let lat;
-    let long;
+		let long;
+		
 	Photo.findById(req.params.id)
 		.then((photo) => {
 			lat = photo.lat;
@@ -58,14 +59,16 @@ router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, ne
 				url: data.query.images,
 				score: data.results[0].score,
 				lat: lat,
-                long: long,
-                username: req.user.username
+        long: long,
+        username: req.user.username
 			};
+
 			Plant.create(plantdb).then((plant) => {
 				User.findById(req.user.id).then((user) => {
 					user.plants.push(plant.id);
-					user.save().then((data) => {
-						res.json(data);
+					user.url.push(plant.url)
+					user.save().then((plant) => {
+						res.json(plant);
 					});
 				});
 			});
