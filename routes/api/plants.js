@@ -66,7 +66,6 @@ router.get("/:id", passport.authenticate('jwt', {session: false}), (req, res, ne
 			Plant.create(plantdb).then((plant) => {
 				User.findById(req.user.id).then((user) => {
 					user.plants.push(plant.id);
-					user.url.push(plant.url)
 					user.save().then((plant) => {
 						res.json(plant);
 					});

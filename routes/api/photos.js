@@ -86,8 +86,7 @@ router.post(
             name: image.original_filename,
             lat: lat,
             long: long,
-            username: req.user.username,
-            id: photo.id
+            username: req.user.username
           };
 
           Photo.create(dbimage).then(photo => {
