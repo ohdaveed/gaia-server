@@ -10,7 +10,7 @@ mongoose.connect(connectionString, {
 })
 
 mongoose.connection.on("connected", () => {
-	console.log(`Mongoose connected to ${connectionString}`);
+	console.log(`Mongoose connected to MongoAtlas`);
 });
 
 mongoose.connection.on("disconnected", () => {
