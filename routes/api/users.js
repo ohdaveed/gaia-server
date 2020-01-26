@@ -9,6 +9,7 @@ const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 // Load User model
 const User = require("../../models/User");
+const passport = require("passport");
 
 // @route POST api/users/register
 // @desc Register user
@@ -22,7 +23,7 @@ router.post("/register", (req, res) => {
   }
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
-      return res.status(400).json({ username: "username taken" });
+      return res.status(400).json({ username: "email taken" });
     } else {
       const newUser = new User({
         username: req.body.username,
@@ -94,5 +95,13 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+router.get(
+  "/currentUser",
+  passport.authenticate("jwt", { session: false }),
+  function(req, res) {
+    res.json({ username: req.user.username });
+  }
+);
 
 module.exports = router;

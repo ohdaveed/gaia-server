@@ -3,10 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-
-const methodOverride = require("method-override");
 const cors = require("cors");
-
 const passport = require("passport");
 const users = require("./routes/api/users");
 const photos = require("./routes/api/photos");
@@ -19,14 +16,14 @@ require("./db/db.js");
 
 app.use(
   cors({
-    origin: process.env.REACT_APP_API_URL,
+    origin: "",
     credentials: true,
     optionsSuccessStatus: 200
   })
 );
 
 //BodyParser
-app.use(methodOverride("_method"));
+// app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -34,11 +31,14 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 // Passport config
 require("./config/passport")(passport);
+
 // Routes
 app.use("/api/users", users);
 app.use("/api/photos", photos);
 app.use("/api/plants", plants);
+app.get("/", (req, res) => {
+  res.send("Gaia backend");
+});
 
 const port = process.env.PORT;
-// process.env.port is Heroku's port if you choose to deploy the app there
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
