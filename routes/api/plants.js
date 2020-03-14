@@ -85,16 +85,19 @@ router.get(
 );
 
 //all plants by a user
-router.get(
-  "/all",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    const user = { username: req.user.username };
+// router.get(
+//   "/all",
+//   passport.authenticate("jwt", { session: false }),
+//   (req, res) => {
+//     const user = { username: req.user.username };
 
-    Plant.find()
-      .where(user)
-      .then(plants => res.json(plants))
-      .catch(err => res.status(404).json({ noplantsfound: "No plants found" }));
-  }
-);
+//     console.log("\n this is the user")
+//     console.log(user)
+
+//     Plant.find()
+//       .where(user)
+//       .then(plants => res.json(plants))
+//       .catch(err => res.status(404).json({ noplantsfound: "No plants found" }));
+//   }
+// );
 module.exports = router;
