@@ -41,16 +41,16 @@ router.get(
       })
       .then(identifyurl => {
         const identified = axios.get(identifyurl).then(response => {
-          // console.log("\n this is my response");
-          // console.log(response);
+          console.log("\n this is my response");
+          console.log(response);
           return response;
         });
         return identified;
       })
       .then(response => {
         const data = response.data;
-        // console.log("\n this is data");
-        // console.log(data);
+        console.log("\n this is data");
+        console.log(data);
         return data;
       })
       .then(data => {
@@ -64,13 +64,17 @@ router.get(
           username: req.user.username
         };
 
-        Plant.create(plantdb).then(plant => {
-          User.findById(req.user.id).then(user => {
-            user.plants.push(plant.id);
-            user.save().then(plant => {
-              res.json(plant);
-            });
-          });
+        console.log("\n this is plantdb");
+        console.log(plantdb)
+
+        Plant.create(plantdb).then(plantdb => {
+          // User.findById(req.user.id).then(user => {
+          //   user.plants.push(plantdb.id);
+          //   user.save().then(plantdb => {
+          //     res.json(plantdb);
+          //   });
+          // });
+          res.json(plantdb)
         });
       })
       // .then((data) => res.json(data))

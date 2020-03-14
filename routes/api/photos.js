@@ -72,6 +72,7 @@ router.post(
 
       let dbimage;
       let imgurl;
+      let id;
       cloudinary.uploader.upload(
         path,
         { public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
@@ -85,7 +86,8 @@ router.post(
             name: image.original_filename,
             lat: lat,
             long: long,
-            username: req.user.username
+            username: req.user.username,
+            id: photo._id
           };
 
           Photo.create(dbimage).then(photo => {
