@@ -16,7 +16,7 @@ require("./db/db.js");
 
 app.use(
   cors({
-    origin: "",
+    origin: "*",
     credentials: true,
     optionsSuccessStatus: 200
   })
