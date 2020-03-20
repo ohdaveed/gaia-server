@@ -39,8 +39,7 @@
     "prettier": "^1.19.1",
     "url-encode-decode": "^1.0.0",
     "validation": "0.0.1",
-    "validator": "^12.2.0",
-    "winston": "^3.2.1"
+    "validator": "^12.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
