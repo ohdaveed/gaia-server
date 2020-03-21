@@ -10,15 +10,15 @@ const passport = require("passport");
 
 // MULTER
 const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function(req, file, cb) {
-    console.log(file);
-    cb(null, file.originalname);
-  }
-});
+const storage = multer.memoryStorage()
+  // destination: function(req, file, cb) {
+  //   cb(null, "uploads/");
+  // },
+  // filename: function(req, file, cb) {
+  //   console.log(file);
+  //   cb(null, file.originalname);
+  // }
+
 
 // gets all photos from a user
 router.get(
@@ -45,7 +45,9 @@ router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
   function(req, res) {
-    const upload = multer({ storage }).single("image");
+
+    const upload = multer({ storage: storage })
+
     upload(req, res, function(err) {
       if (err) {
         return res.send(err);
@@ -88,7 +90,7 @@ router.post(
             lat: lat,
             long: long,
             username: req.user.username,
-            id: photo._id
+            id: image._id
           };
 
           Photo.create(dbimage).then(photo => {
