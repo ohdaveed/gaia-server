@@ -1,24 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
 const Photo = require("../../models/Photo");
 const axios = require("axios");
 const User = require("../../models/User");
-const keys = require("../../config/keys");
+const fs = require("fs");
+const Datauri = require("datauri");
+const datauri = new Datauri();
 
 const passport = require("passport");
 
 // MULTER
 const multer = require("multer");
-const storage = multer.memoryStorage()
-  // destination: function(req, file, cb) {
-  //   cb(null, "uploads/");
-  // },
-  // filename: function(req, file, cb) {
-  //   console.log(file);
-  //   cb(null, file.originalname);
-  // }
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single("image");
 
 // gets all photos from a user
 router.get(
@@ -45,15 +39,15 @@ router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
   function(req, res) {
-
-    const upload = multer({ storage: storage })
-
     upload(req, res, function(err) {
       if (err) {
         return res.send(err);
       }
 
+      console.log(req.file);
+
       const cloudinary = require("cloudinary").v2;
+
       cloudinary.config({
         cloud_name: process.env.CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY,
@@ -69,28 +63,39 @@ router.post(
         long = parseFloat(response.data.longitude);
       });
 
-      const path = req.file.path;
-      const uniqueFilename = new Date().toISOString();
+      console.log(typeof req.file.buffer);
+
+      // console.log(buffer);
+      const uniqueFilename = req.file.originalname + "-" + Date.now()
+
+      datauri.format(".png", req.file.buffer);
+
+      const path = datauri.content;
 
       let dbimage;
       let imgurl;
       let id;
-      
+      let user;
+      let name;
+
       cloudinary.uploader.upload(
         path,
-        { public_id: `gaia/${uniqueFilename}`, tags: `gaia` }, // directory and tags are optional
-        function(err, image) {
+        {
+          public_id: `gaia/${uniqueFilename}`,
+          tags: `gaia, ${req.user.id}`
+        },
+        function(err, result) {
           if (err) return res.send(err);
-          const fs = require("fs");
-          fs.unlinkSync(path);
+
+          console.log(result);
 
           const dbimage = {
-            url: image.url,
-            name: image.original_filename,
+            url: result.url,
+            tags: result.tags,
             lat: lat,
             long: long,
-            username: req.user.username,
-            id: image._id
+            user: req.user.username,
+            id: result.public_id
           };
 
           Photo.create(dbimage).then(photo => {

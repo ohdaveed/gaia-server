@@ -7,7 +7,7 @@ const photoSchema = new Schema({
 		ref: "User"
 	},
 	url: String,
-	name: String,
+	name: Array,
 	lat: Number,
 	long: Number,
 	username: String,
