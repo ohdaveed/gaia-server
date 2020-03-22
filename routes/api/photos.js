@@ -100,6 +100,7 @@ router.post(
 
           imgurl = result.url;
 
+          
           User.findById(req.user.id).then(user => {
             user.url.push(dbimage.url);
             user.save().then(console.log(dbimage));
