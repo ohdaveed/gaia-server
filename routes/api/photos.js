@@ -66,7 +66,7 @@ router.post(
       console.log(typeof req.file.buffer);
 
       // console.log(buffer);
-      const uniqueFilename = req.file.originalname + "-" + Date.now()
+      const uniqueFilename = req.file.originalname;
 
       datauri.format(".png", req.file.buffer);
 
@@ -97,6 +97,13 @@ router.post(
             user: req.user.username,
             id: result.public_id
           };
+
+          imgurl = result.url;
+
+          User.findById(req.user.id).then(user => {
+            user.url.push(dbimage.url);
+            user.save().then(console.log(dbimage));
+          });
 
           Photo.create(dbimage).then(photo => {
             User.findById(req.user.id).then(user => {
