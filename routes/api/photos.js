@@ -28,6 +28,8 @@ router.get(
   }
 );
 
+//Photo test route
+
 router.get("/", passport.authenticate("jwt", { session: false }), function(
   req,
   res
@@ -35,6 +37,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), function(
   res.send("photo route testing!");
 });
 
+// Photo upload to cloudinary
 router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
@@ -44,7 +47,7 @@ router.post(
         return res.send(err);
       }
 
-      // console.log(req.file);
+      console.log(req.file);
 
       const cloudinary = require("cloudinary").v2;
 
@@ -66,7 +69,7 @@ router.post(
       // console.log(typeof req.file.buffer);
 
       // console.log(buffer);
-      const uniqueFilename = req.file.originalname;
+      const uniqueFilename = 'david';
 
       datauri.format(".png", req.file.buffer);
 
@@ -118,5 +121,7 @@ router.post(
     });
   }
 );
+
+
 
 module.exports = router;
