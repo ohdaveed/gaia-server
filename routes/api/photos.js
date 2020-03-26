@@ -44,7 +44,7 @@ router.post(
         return res.send(err);
       }
 
-      console.log(req.file);
+      // console.log(req.file);
 
       const cloudinary = require("cloudinary").v2;
 
@@ -63,7 +63,7 @@ router.post(
         long = parseFloat(response.data.longitude);
       });
 
-      console.log(typeof req.file.buffer);
+      // console.log(typeof req.file.buffer);
 
       // console.log(buffer);
       const uniqueFilename = req.file.originalname;
@@ -87,7 +87,7 @@ router.post(
         function(err, result) {
           if (err) return res.send(err);
 
-          console.log(result);
+          // console.log(result);
 
           const dbimage = {
             url: result.url,
@@ -99,7 +99,6 @@ router.post(
           };
 
           imgurl = result.url;
-
           
           User.findById(req.user.id).then(user => {
             user.url.push(dbimage.url);
