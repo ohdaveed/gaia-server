@@ -67,6 +67,7 @@ router.post("/login", (req, res) => {
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
         // User matched
+
         // Create JWT Payload
         const payload = {
           id: user.id,
@@ -77,14 +78,11 @@ router.post("/login", (req, res) => {
           payload,
           keys.secretOrKey,
           {
-            expiresIn: 86400 // 24 hours in seconds
+            algorithm: 'HS256' // 24 hours in seconds
           },
+
           (err, token) => {
-            res.json({
-              success: true,
-              payload,
-              token: "Bearer " + token
-            });
+            res.json(token);
           }
         );
       } else {
