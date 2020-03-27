@@ -77,11 +77,11 @@ router.post("/login", (req, res) => {
         jwt.sign(
           payload,
           keys.secretOrKey,
-          {
-            algorithm: 'HS256' // 24 hours in seconds
-          },
 
-          (err, token) => {
+          {
+            expiresIn: "1h" // 24 hours in seconds
+          },
+          function(err, token) {
             res.json(token);
           }
         );
