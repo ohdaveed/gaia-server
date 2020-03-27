@@ -78,11 +78,14 @@ router.post("/login", (req, res) => {
           payload,
           keys.secretOrKey,
           {
-            algorithm: 'HS256' // 24 hours in seconds
+            expiresIn: 86400 // 24 hours in seconds
           },
-
           (err, token) => {
-            res.json(token);
+            res.json({
+              success: true,
+              payload,
+              token: "Bearer " + token
+            });
           }
         );
       } else {
