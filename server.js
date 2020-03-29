@@ -14,7 +14,7 @@ require("./db/db.js");
 
 // Connect to MongoDB
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header(
     "Access-Control-Allow-Headers",
@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
 
 //BodyParser
 // app.use(methodOverride("_method"));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Passport middleware

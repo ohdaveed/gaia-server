@@ -25,6 +25,7 @@ router.post("/register", (req, res) => {
     if (user) {
       return res.status(400).json({ username: "email taken" });
     } else {
+      7
       const newUser = new User({
         username: req.body.username,
         email: req.body.email,
@@ -37,13 +38,15 @@ router.post("/register", (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.json(user))
+            .then(user => res.json(user.username))
             .catch(err => console.log(err));
         });
       });
     }
   });
 });
+
+
 
 // @route POST api/users/login
 // @desc Login user and return JWT token
@@ -55,8 +58,10 @@ router.post("/login", (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
+
   const email = req.body.email;
   const password = req.body.password;
+
   // Find user by email
   User.findOne({ email }).then(user => {
     // Check if user exists
@@ -73,29 +78,36 @@ router.post("/login", (req, res) => {
           id: user.id,
           name: user.username
         };
-        // Sign token
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 86400 // 24 hours in seconds
-          },
-          (err, token) => {
-            res.json({
-              success: true,
-              payload,
-              token: "Bearer " + token
-            });
+
+        req.login(payload, { session: false }, error => {
+          if (error) {
+            res.status(400).send({ error });
           }
-        );
-      } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
+        });
+        // Sign token
+        const token = jwt.sign(JSON.stringify(payload), keys.secretOrKey);
+
+        res.cookie("jwt", jwt, { httpOnly: true, secure: true });
+        res.status(200).send({ token });
       }
     });
   });
 });
+
+//       (err, token) => {
+//         res.json({
+//           success: true,
+//           payload,
+//           token: "Bearer " + token
+//         });
+//       }
+//     );
+//   } else {
+//     return res
+//       .status(400)
+//       .json({ passwordincorrect: "Password incorrect" });
+//   }
+// });
 
 router.get(
   "/currentUser",
