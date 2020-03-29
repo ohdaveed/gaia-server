@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
+const jwtExpirySeconds = 3600;
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -21,11 +22,10 @@ router.post("/register", (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(400).json({ username: "email taken" });
     } else {
-      7
       const newUser = new User({
         username: req.body.username,
         email: req.body.email,
@@ -38,15 +38,13 @@ router.post("/register", (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.json(user.username))
-            .catch(err => console.log(err));
+            .then((user) => res.json(user.username))
+            .catch((err) => console.log(err));
         });
       });
     }
   });
 });
-
-
 
 // @route POST api/users/login
 // @desc Login user and return JWT token
@@ -63,32 +61,45 @@ router.post("/login", (req, res) => {
   const password = req.body.password;
 
   // Find user by email
-  User.findOne({ email }).then(user => {
+  User.findOne({ email }).then((user) => {
     // Check if user exists
     if (!user) {
       return res.status(404).json({ emailnotfound: "email not found" });
     }
     // Check password
-    bcrypt.compare(password, user.password).then(isMatch => {
+    bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
         // User matched
 
         // Create JWT Payload
-        const payload = {
-          id: user.id,
-          name: user.username
-        };
+        // const payload = {
+        //   id: user.id,
+        //   name: user.username
+        // };
 
-        req.login(payload, { session: false }, error => {
-          if (error) {
-            res.status(400).send({ error });
-          }
+        let name = user.username
+
+        const token = jwt.sign({name}, keys.secretOrKey, {
+          algorithm: 'HS256',
+          expiresIn: jwtExpirySeconds
         });
-        // Sign token
-        const token = jwt.sign(JSON.stringify(payload), keys.secretOrKey);
 
-        res.cookie("jwt", jwt, { httpOnly: true, secure: true });
-        res.status(200).send({ token });
+        console.log('token:', token);
+
+        res.cookie('token', token, { maxAge: jwtExpirySeconds * 1000 });
+        res.status(200)
+        res.end();
+
+        // req.login(payload, { session: false }, error => {
+        //   if (error) {
+        //     res.status(400).send({ error });
+        //   }
+        // });
+        // // Sign token
+        // const token = jwt.sign(JSON.stringify(payload), keys.secretOrKey);
+        // console.log(keys.secretOrKey)
+        // console.log(keys)
+        // res.status(200).send({token});
       }
     });
   });
@@ -112,7 +123,7 @@ router.post("/login", (req, res) => {
 router.get(
   "/currentUser",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
+  function (req, res) {
     res.json({ username: req.user.username });
   }
 );
