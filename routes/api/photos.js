@@ -23,14 +23,16 @@ router.get(
 
     Photo.find()
       .where(user)
-      .then(photos => res.json(photos))
-      .catch(err => res.status(404).json({ nophotosfound: "No photos found" }));
+      .then((photos) => res.json(photos))
+      .catch((err) =>
+        res.status(404).json({ nophotosfound: "No photos found" })
+      );
   }
 );
 
 //Photo test route
 
-router.get("/", passport.authenticate("jwt", { session: false }), function(
+router.get("/", passport.authenticate("jwt", { session: false }), function (
   req,
   res
 ) {
@@ -41,8 +43,8 @@ router.get("/", passport.authenticate("jwt", { session: false }), function(
 router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
-    upload(req, res, function(err) {
+  function (req, res) {
+    upload(req, res, function (err) {
       if (err) {
         return res.send(err);
       }
@@ -61,7 +63,7 @@ router.post(
         "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
       let long, lat;
-      let location = axios.get(geourl).then(function(response) {
+      let location = axios.get(geourl).then(function (response) {
         lat = parseFloat(response.data.latitude);
         long = parseFloat(response.data.longitude);
       });
@@ -69,7 +71,7 @@ router.post(
       // console.log(typeof req.file.buffer);
 
       // console.log(buffer);
-      const uniqueFilename = 'david';
+      const uniqueFilename = "david";
 
       datauri.format(".png", req.file.buffer);
 
@@ -87,7 +89,7 @@ router.post(
           public_id: `gaia/${uniqueFilename}`,
           tags: `gaia, ${req.user.id}`
         },
-        function(err, result) {
+        function (err, result) {
           if (err) return res.send(err);
 
           // console.log(result);
@@ -102,16 +104,16 @@ router.post(
           };
 
           imgurl = result.url;
-          
-          User.findById(req.user.id).then(user => {
+
+          User.findById(req.user.id).then((user) => {
             user.url.push(dbimage.url);
             user.save().then(console.log(dbimage));
           });
 
-          Photo.create(dbimage).then(photo => {
-            User.findById(req.user.id).then(user => {
+          Photo.create(dbimage).then((photo) => {
+            User.findById(req.user.id).then((user) => {
               user.photos.push(photo.id);
-              user.save().then(data => {
+              user.save().then((data) => {
                 res.json(dbimage);
               });
             });
@@ -121,7 +123,5 @@ router.post(
     });
   }
 );
-
-
 
 module.exports = router;

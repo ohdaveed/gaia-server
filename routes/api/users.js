@@ -94,9 +94,20 @@ router.post("/login", (req, res) => {
 
 router.get(
   "/currentUser",
-  passport.authenticate("jwt", { session: true }),
+  passport.authenticate("jwt", { session: false }),
   function (req, res) {
     res.json({ username: req.user.username });
+  }
+);
+
+// get array of urls all photos user has uploaded
+router.get(
+  "/photos",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res) {
+    User.findById(req.user.id).then((user) => {
+      res.json(user.url).status(200);
+    });
   }
 );
 
