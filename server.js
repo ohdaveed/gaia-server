@@ -13,24 +13,20 @@ const plants = require("./routes/api/plants");
 require("./db/db.js");
 
 // Connect to MongoDB
+let whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://gaiadb.herokuapp.com']
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
+app.use(cors({
+  origin: function(origin, callback){
 
-  app.options("*", (req, res) => {
-    // allowed XHR methods
-    res.header(
-      "Access-Control-Allow-Methods",
-      "GET, PATCH, PUT, POST, DELETE, OPTIONS"
-    );
-    res.send();
-  });
-});
+    if(!origin) return callback(null, true);
+
+    if(whitelist.indexOf(origin) === -1){
+      let message = 'shant pass'
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 //BodyParser
 // app.use(methodOverride("_method"));
