@@ -13,7 +13,7 @@ const plants = require("./routes/api/plants");
 require("./db/db.js");
 
 // Connect to MongoDB
-let whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://gaiadb.herokuapp.com']
+let whitelist = ['http://localhost:3000', 'https://gaiadb.herokuapp.com']
 
 app.use(cors({
   origin: function(origin, callback){

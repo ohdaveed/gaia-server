@@ -74,17 +74,16 @@ router.post("/login", (req, res) => {
         const payload = {
           id: user.id,
           name: user.username,
-          url: [user.url]
+          url: user.url
         };
 
         // let name = user.username
 
         const token = jwt.sign(JSON.stringify(payload), keys.secretOrKey, {
-          algorithm: "HS256",
-          complete: true
+          algorithm: "HS256"
         });
 
-        console.log("token:", token);
+        // console.log("token:", token);
 
         res
           .status(200)
@@ -93,8 +92,7 @@ router.post("/login", (req, res) => {
             success: true,
             payload,
             token: "Bearer " + token
-          })
-          .send(token);
+          });
       }
     });
   });
