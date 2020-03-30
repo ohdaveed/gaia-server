@@ -3,7 +3,7 @@ const router = express.Router();
 const Photo = require("../../models/Photo");
 const axios = require("axios");
 const User = require("../../models/User");
-const fs = require("fs");
+// const fs = require("fs");
 const Datauri = require("datauri");
 const datauri = new Datauri();
 
