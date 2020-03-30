@@ -86,7 +86,7 @@ router.post("/login", (req, res) => {
           success: true,
           payload,
           token: "Bearer " + token
-        }).cookie('userinfo', token, { expire: 360000 + Date.now()});
+        });
       }
     });
   });
