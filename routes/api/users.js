@@ -77,44 +77,20 @@ router.post("/login", (req, res) => {
           url: user.url
         };
 
-        // let name = user.username
-
-        const token = jwt.sign(JSON.stringify(payload), keys.secretOrKey, {
-          algorithm: "HS256"
+        const token = jwt.sign(payload, keys.secretOrKey, {
+          algorithm: "HS256",
+          expiresIn: 36000
         });
 
-        // console.log("token:", token);
-
-        res
-          .status(200)
-          .cookie("token", token, { maxAge: 30000 })
-          .json({
-            success: true,
-            payload,
-            token: "Bearer " + token
-          });
+        res.status(200).json({
+          success: true,
+          payload,
+          token: "Bearer " + token
+        });
       }
     });
   });
-
-  // res.cookie('token', token, { maxAge: jwtExpirySeconds * 1000 });
-  // res.status(200)
-  // res.end();
-
-  // req.login(payload, { session: false }, error => {
-  //   if (error) {
-  //     res.status(400).send({ error });
-  //   }
-  // });
-  // // Sign token
-  // const token = jwt.sign(JSON.stringify(payload), keys.secretOrKey);
-  // console.log(keys.secretOrKey)
-  // console.log(keys)
-  // res.status(200).send({token});
 });
-//     });
-//   });
-// });
 
 router.get(
   "/currentUser",
