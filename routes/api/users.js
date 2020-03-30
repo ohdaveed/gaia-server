@@ -72,23 +72,25 @@ router.post("/login", (req, res) => {
         // User matched
 
         // Create JWT Payload
-        // const payload = {
-        //   id: user.id,
-        //   name: user.username
-        // };
+        const payload = {
+          id: user.id,
+          name: user.username,
+          iss: 'gaia',
 
-        let name = user.username
+        };
 
-        const token = jwt.sign({name}, keys.secretOrKey, {
+        // let name = user.username
+
+        const token = jwt.sign(payload, keys.secretOrKey, {
           algorithm: 'HS256',
-          expiresIn: jwtExpirySeconds
+          complete: true,
         });
 
-        console.log('token:', token);
+        // console.log('token:', token);
 
-        res.cookie('token', token, { maxAge: jwtExpirySeconds * 1000 });
-        res.status(200)
-        res.end();
+        // res.cookie('token', token, { maxAge: jwtExpirySeconds * 1000 });
+        // res.status(200)
+        // res.end();
 
         // req.login(payload, { session: false }, error => {
         //   if (error) {
@@ -122,7 +124,7 @@ router.post("/login", (req, res) => {
 
 router.get(
   "/currentUser",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: true }),
   function (req, res) {
     res.json({ username: req.user.username });
   }

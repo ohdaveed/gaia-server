@@ -40,6 +40,7 @@
     "passport-jwt-cookiecombo": "^1.0.5",
     "passport-local": "^1.0.0",
     "prettier": "^2.0.2",
+    "react-image-gallery": "^1.0.7",
     "url-encode-decode": "^1.0.0",
     "validation": "0.0.1",
     "validator": "^13.0.0"
