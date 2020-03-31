@@ -68,10 +68,7 @@ router.post(
         long = parseFloat(response.data.longitude);
       });
 
-      // console.log(typeof req.file.buffer);
-
-      // console.log(buffer);
-      const uniqueFilename = "david";
+     const uniqueFilename = req.file.originalname
 
       datauri.format(".png", req.file.buffer);
 
@@ -91,8 +88,6 @@ router.post(
         },
         function (err, result) {
           if (err) return res.send(err);
-
-          // console.log(result);
 
           const dbimage = {
             url: result.url,
@@ -114,7 +109,7 @@ router.post(
             User.findById(req.user.id).then((user) => {
               user.photos.push(photo.id);
               user.save().then((data) => {
-                res.json(dbimage);
+                res.json(dbimage).status(200);
               });
             });
           });

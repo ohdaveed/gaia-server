@@ -19,6 +19,8 @@ require('./db/db.js');
 // Connect to MongoDB
 app.use(helmet());
 
+app.use(cors())
+
 // BodyParser
 // app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({ extended: false }));
