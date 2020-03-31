@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 
 const helmet = require('helmet');
-const mongoose = require('mongoooe');
+const mongoose = require('mongoose');
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
