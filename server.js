@@ -20,7 +20,7 @@ app.use(cors());
 
 // BodyParser
 // app.use(methodOverride("_method"));
-// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
 // DB Config
@@ -42,6 +42,6 @@ app.use('/api/plants', plants);
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Express server listening on port ${port}.`);
+	// eslint-disable-next-line no-console
+	console.log(`Express server listening on port ${port}.`);
 });
