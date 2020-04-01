@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const mongoose = require('mongoose');
 
 const bodyParser = require('body-parser');
@@ -13,18 +13,18 @@ const users = require('./routes/api/users');
 const photos = require('./routes/api/photos');
 const plants = require('./routes/api/plants');
 
-// DB Config
-require('./db/db.js');
-
 // Connect to MongoDB
-app.use(helmet());
+// app.use(helmet());
 
-app.use(cors())
+app.use(cors());
 
 // BodyParser
 // app.use(methodOverride("_method"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+
+// DB Config
+require('./db/db.js');
 
 // Passport middleware
 app.use(passport.initialize());
@@ -35,13 +35,13 @@ require('./config/passport')(passport);
 app.use('/api/users', users);
 app.use('/api/photos', photos);
 app.use('/api/plants', plants);
-app.get('/', (req, res) => {
-  res.send('Gaia backend');
-});
+// app.get('/', (req, res) => {
+//   res.send('Gaia backend');
+// });
 
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Express server listening on port ${port}.`);
+    // eslint-disable-next-line no-console
+    console.log(`Express server listening on port ${port}.`);
 });
