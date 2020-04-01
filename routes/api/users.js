@@ -71,20 +71,23 @@ router.post('/login', (req, res) => {
 				// User matched
 
 				// Create JWT Payload
-				const body = {
+				const payload = {
 					id: user.id,
 					username: user.username,
 				};
 
-				const token = jwt.sign({ user: body }, keys.secretOrKey);
+				const token = jwt.sign(payload, keys.secretOrKey);
+
 				return res.json({ token });
 			}
 		});
 	});
 });
 
+// Retrieve current user from sent JWT
+
 router.get(
-	'/currentUser',
+	'/currentuser',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		res.json({ username: req.user.username });

@@ -31,13 +31,23 @@ router.get(
 );
 
 //Photo test route
-
 router.get('/', passport.authenticate('jwt', { session: false }), function (
 	req,
 	res
 ) {
 	res.send('photo route testing!');
 });
+
+// Delete photo by id
+router.get(
+	'/:id',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		Photo.findByIdAndRemove(req.params.id).then((photo) => {
+			res.json({ message: 'photo deleted' }).status(200);
+		});
+	}
+);
 
 // Photo upload to cloudinary
 router.post(
