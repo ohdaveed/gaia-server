@@ -38,7 +38,16 @@ router.post('/register', (req, res) => {
 				newUser.password = hash;
 				newUser
 					.save()
-					.then((user) => res.json(user.username))
+					.then((user) => {
+
+						const payload = {
+							id: user.id,
+							username: user.username
+						}
+
+						const token = jwt.sign(payload, keys.secretOrKey)
+
+						return 	res.json({token})})
 					.catch((err) => console.log(err));
 			});
 		});

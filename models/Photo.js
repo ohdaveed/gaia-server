@@ -7,10 +7,13 @@ const photoSchema = new Schema({
         ref: 'User',
     },
     url: String,
-    name: Array,
-    lat: Number,
-    long: Number,
-    username: String,
+    plant_name: Array,
+    location: Array,
+    user: String,
+    mimetype: String,
+    tags: Array,  
+    css: String,
+    user: String,
     date_created: { type: Date, default: Date.now },
 });
 
