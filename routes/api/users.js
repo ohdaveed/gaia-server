@@ -109,7 +109,7 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     User.findById(req.user.id).then(user => {
-      res.json(user.url).status(200);
+      res.json({urls: user.url}).status(200);
     });
   }
 );
