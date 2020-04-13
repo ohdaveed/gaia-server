@@ -6,19 +6,13 @@ const plantSchema = new Schema({
 		type: mongoose.Schema.Types.ObjectID,
 		ref: 'User',
 	},
-	common_name: String,
 	scientific_name: String,
-	url: String,
-	location: {
-		type: String,
-		enum: ['Point'],
-		required: true,
-	},
+	url: [String],
 	coordinates: {
 		type: [Number],
 		required: true,
 	},
-
+	common_name: { type: [String], required: false, default: null},
 	lat: Number,
 	long: Number,
 	score: Number,

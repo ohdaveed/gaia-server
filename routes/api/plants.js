@@ -41,8 +41,8 @@ router.get(
 			})
 			.then((identifyurl) => {
 				const identified = axios.get(identifyurl).then((response) => {
-					console.log('\n this is my response');
-					console.log(response);
+					// console.log('\n this is my response');
+					// console.log(response);
 					return response;
 				});
 				return identified;
@@ -50,7 +50,7 @@ router.get(
 			.then((response) => {
 				const data = response.data;
 				console.log('\n this is data');
-				console.log(data);
+				console.log(data.results[0]);
 				return data;
 			})
 			.then((data) => {

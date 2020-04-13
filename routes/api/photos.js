@@ -19,6 +19,7 @@ router.get(
   "/all",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    let user = req.user.id
     Photo.find()
       .where(user)
       .then(photos => res.json(photos))
@@ -110,7 +111,8 @@ router.post(
             tags: [result.tags ],
             name: name,
             mimetype: mimetype,
-            location: [{ lat: lat, lng: long }],
+            long: long,
+            lat: lat,
             user: req.user.username,
             id: result.public_id
           };
