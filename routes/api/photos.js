@@ -36,7 +36,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), function(
 });
 
 // Delete photo by id
-router.get(
+router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
@@ -105,16 +105,13 @@ router.post(
 
           const dbimage = {
             url: result.url,
-            width: result.width,
-            height: result.height,
             format: result.format,
-            tags: [result.tags ],
-            name: name,
-            mimetype: mimetype,
+            tags: req.user.id ,
+            name: result.public_id,
             long: long,
             lat: lat,
             user: req.user.username,
-            id: result.public_id
+
           };
 
           imgurl = result.url;
