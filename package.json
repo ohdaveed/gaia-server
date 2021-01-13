@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/ohdaveed/gaia-backend#readme",
   "dependencies": {
+    "all": "0.0.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.21.0",
