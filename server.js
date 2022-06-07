@@ -16,7 +16,7 @@ const plants = require("./routes/api/plants");
 // Connect to MongoDB
 // app.use(helmet());
 
-app.use(cors({ origin: ["https://gaia-frontend.herokuapp.com"] }));
+app.use(cors({ origin: ["http://localhost:3000"] }));
 // BodyParser
 // app.use(methodOverride("_method"));
 app.use(express.json());
