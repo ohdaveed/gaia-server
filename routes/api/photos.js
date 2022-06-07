@@ -19,28 +19,31 @@ router.get(
   "/all",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    let user = req.user.id
+    let user = req.user.id;
     Photo.find()
       .where(user)
-      .then(photos => res.json(photos))
-      .catch(err => res.status(404).json({ nophotosfound: "No photos found" }));
+      .then((photos) => res.json(photos))
+      .catch((err) =>
+        res.status(404).json({ nophotosfound: "No photos found" })
+      );
   }
 );
 
 //Photo test route
-router.get("/", passport.authenticate("jwt", { session: false }), function(
-  req,
-  res
-) {
-  res.send("photo route testing!");
-});
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res) {
+    res.send("photo route testing!");
+  }
+);
 
 // Delete photo by id
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Photo.findByIdAndRemove(req.params.id).then(photo => {
+    Photo.findByIdAndRemove(req.params.id).then((photo) => {
       res.json({ message: "photo deleted" }).status(200);
     });
   }
@@ -50,8 +53,8 @@ router.delete(
 router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
-    upload(req, res, function(err) {
+  function (req, res) {
+    upload(req, res, function (err) {
       if (err) {
         return res.send(err);
       }
@@ -63,19 +66,19 @@ router.post(
       cloudinary.config({
         cloud_name: process.env.CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_SECRET
+        api_secret: process.env.CLOUDINARY_SECRET,
       });
 
       const geourl =
         "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
       let long, lat;
-      let location = axios.get(geourl).then(function(response) {
+      let location = axios.get(geourl).then(function (response) {
         lat = parseFloat(response.data.latitude);
         long = parseFloat(response.data.longitude);
       });
 
-      datauri.format(".png", req.file.buffer);
+      datauri.format(".jpg", req.file.buffer);
 
       const file = datauri.content;
 
@@ -84,8 +87,8 @@ router.post(
       let id;
       let user;
       let name = req.file.originalname.split(".")[0];
-      let mimetype = datauri.mimetype;
-      let css = datauri.getcss;
+      let mimetype = file.mimetype;
+      let css = file.getcss;
 
       const uniqueFilename =
         Date.now() + "-" + req.file.originalname.split(".")[0];
@@ -96,35 +99,34 @@ router.post(
           folder: `${req.user.username}`,
 
           public_id: `${uniqueFilename}`,
-          tags: `${req.user.id}`
+          tags: `${req.user.id}`,
         },
-        function(err, result) {
+        function (err, result) {
           if (err) return res.send(err);
-
-          console.log(result);
-
+          /*
+                    console.log(result);
+          */
           const dbimage = {
             url: result.url,
             format: result.format,
-            tags: req.user.id ,
+            tags: req.user.id,
             name: result.public_id,
             long: long,
             lat: lat,
             user: req.user.username,
-
           };
 
           imgurl = result.url;
 
-          User.findById(req.user.id).then(user => {
-            user.url.push(dbimage.url);
+          User.findById(req.user.id).then((user) => {
+            user.photos.push(dbimage.url);
             user.save().then(console.log(dbimage));
           });
 
-          Photo.create(dbimage).then(photo => {
-            User.findById(req.user.id).then(user => {
-              user.photos.push(photo.id);
-              user.save().then(data => {
+          Photo.create(dbimage).then((photo) => {
+            User.findById(req.user.id).then((user) => {
+              user.photos.push(dbimage.url);
+              user.save().then((data) => {
                 res.json(dbimage).status(200);
               });
             });

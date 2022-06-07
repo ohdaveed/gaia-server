@@ -18,7 +18,7 @@ const UserSchema = new Schema({
 		required: true,
 	},
 	treks: [{}],
-	photos: [],
+	photos: [{}],
 	plants: [{}],
 });
 

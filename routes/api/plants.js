@@ -60,8 +60,8 @@ router.get(
 						data.results[0].species.scientificNameWithoutAuthor,
 					url: data.query.images,
 					score: data.results[0].score,
-					lat: lat,
-					long: long,
+					latdec: lat,
+					longdec: long,
 					username: req.user.username,
 				};
 
