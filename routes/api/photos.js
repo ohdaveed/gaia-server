@@ -3,16 +3,13 @@ const router = express.Router();
 const Photo = require("../../models/Photo");
 const axios = require("axios");
 const User = require("../../models/User");
-// const fs = require("fs");
+const fs = require("fs");
 const Datauri = require("datauri");
-const datauri = new Datauri();
-
 const passport = require("passport");
 
 // MULTER
 const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).single("image");
+
 
 // gets all photos from a user
 router.get(
@@ -53,13 +50,23 @@ router.delete(
 router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
-  function (req, res) {
-    upload(req, res, function (err) {
+    function(req, res) {
+
+      const storage = multer.memoryStorage();
+      const upload = multer({ storage: storage }).single("image");
+
+    upload(req, res, function(err) {
       if (err) {
         return res.send(err);
       }
+      else {}
+      console.log("The request")
+      console.log(req.file);
 
-      // console.log(req.file);
+    
+      const upload = multer({ storage: storage }).single("image");
+
+
 
       const cloudinary = require("cloudinary").v2;
 
@@ -73,12 +80,15 @@ router.post(
         "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
       let long, lat;
-      let location = axios.get(geourl).then(function (response) {
+
+
+      let location = axios.get(geourl).then(function(response) {
         lat = parseFloat(response.data.latitude);
         long = parseFloat(response.data.longitude);
       });
-
-      datauri.format(".jpg", req.file.buffer);
+      
+      const datauri = new Datauri();
+      datauri.format("", req.file.buffer);
 
       const file = datauri.content;
 
@@ -103,9 +113,9 @@ router.post(
         },
         function (err, result) {
           if (err) return res.send(err);
-          /*
+          
                     console.log(result);
-          */
+          
           const dbimage = {
             url: result.url,
             format: result.format,
