@@ -19,7 +19,7 @@ const UserSchema = new Schema({
 	},
 	treks: [{}],
 	photos: [{}],
-	plants: [{}],
+	plants: [{}]
 });
 
 const User = mongoose.model("User", UserSchema);

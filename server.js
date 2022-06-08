@@ -1,11 +1,8 @@
 require("dotenv").config();
 
-const express = require("express");
+const express = require("express")
 const app = express();
-
-// const helmet = require('helmet');
-const mongoose = require("mongoose");
-
+const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const passport = require("passport");
@@ -13,15 +10,14 @@ const users = require("./routes/api/users");
 const photos = require("./routes/api/photos");
 const plants = require("./routes/api/plants");
 
-// Connect to MongoDB
-// app.use(helmet());
 
-app.use(cors({ origin: ["http://localhost:3000"] }));
+app.use(cors({ origin: process.env.REACT_APP, credentials: true, optionsSuccessStatus: 200 }))
+
 // BodyParser
-// app.use(methodOverride("_method"));
+app.use(methodOverride("_method"));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: false }));
 
 // DB Config
 require("./db/db.js");
