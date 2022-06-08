@@ -23,8 +23,6 @@ cloudinary.config({
 });
 
 
-
-
 // gets all photos from a user
 router.get(
   "/all",
@@ -101,6 +99,7 @@ router.post(
         return res.send(err);
       }
 
+
       const geourl = "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
       location = axios.get(geourl).then(function (response) {
@@ -110,7 +109,9 @@ router.post(
         ];
       });
 
+
       const datauri = new Datauri()
+
 
       datauri.format(".png", req.file.buffer);
 
