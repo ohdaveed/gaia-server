@@ -36,13 +36,13 @@ app.use("/api/users", users);
 app.use("/api/photos", photos);
 app.use("/api/plants", plants);
 app.get("/", (req, res) => {
-	const name = req.query.name || "World";
-	res.setHeader("Content-Type", "application/json");
-	res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+  const name = req.query.name || "World";
+  res.setHeader("Content-Type", "application/json");
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
 });
 
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-	console.log(`Express server listening on port ${port}.`);
+  console.log(`Express server listening on port ${port}.`);
 });

@@ -1,22 +1,22 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const connectionString = process.env.MONGODB_URI;
 
 mongoose.connect(connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: true,
 });
 
-mongoose.connection.on('connected', () => {
-    console.log(`Mongoose connected to MongoAtlas`);
+mongoose.connection.on("connected", () => {
+  console.log(`Mongoose connected to MongoAtlas`);
 });
 
-mongoose.connection.on('disconnected', () => {
-    console.log('Mongoose disconnected');
+mongoose.connection.on("disconnected", () => {
+  console.log("Mongoose disconnected");
 });
 
-mongoose.connection.on('error', (err) => {
-    console.log('Mongoose error: ', err);
+mongoose.connection.on("error", (err) => {
+  console.log("Mongoose error: ", err);
 });

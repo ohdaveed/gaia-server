@@ -3,16 +3,29 @@ const router = express.Router();
 const Photo = require("../../models/Photo");
 const axios = require("axios");
 const User = require("../../models/User");
-// const fs = require("fs");
-const Datauri = require("datauri");
-const datauri = new Datauri();
+const cloudinary = require("cloudinary").v2;
 
+// AUTHENTICATION
 const passport = require("passport");
 
 // MULTER
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single("image");
+const Datauri = require("datauri");
+const datauri = new Datauri();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+  secure: true,
+});
+
+let long, lat, location, id, user
+
+const geourl =
+  "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
 // gets all photos from a user
 router.get(
@@ -49,6 +62,34 @@ router.delete(
   }
 );
 
+// router.post(
+//   "/add", {
+
+// }).then(function(err, image) {
+//   var photo = new Photo(req.body);
+// // Get temp file path
+// var imageFile = req.files.image.path;
+// // Upload file to Cloudinary
+// cloudinary.uploader
+//   .upload(imageFile, { tags: "express_sample" })
+//   .then(function (image) {
+//     console.log("** file uploaded to Cloudinary service");
+//     console.dir(image);
+//     photo.image = image;
+//     // Save photo with image metadata
+//     return photo.save();
+//   })
+//   .then(function () {
+//     console.log("** photo saved");
+//   })
+//   .finally(function () {
+//     res.render("photos/create_through_server", {
+//       photo: photo,
+//       upload: photo.image,
+//     });
+//   })
+// })
+
 // Photo upload to cloudinary
 router.post(
   "/upload",
@@ -59,60 +100,50 @@ router.post(
         return res.send(err);
       }
 
-      // console.log(req.file);
+      // const geourl =
+      // "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
+      
 
-      const cloudinary = require("cloudinary").v2;
+        location = axios.get(geourl).then(function (response) {
+          [
+            (lat = parseFloat(response.data.latitude)),
+            (long = parseFloat(response.data.longitude)),
+          ];
+        });
 
-      cloudinary.config({
-        cloud_name: process.env.CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_SECRET,
-      });
-
-      const geourl =
-        "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
-
-      let long, lat;
-      let location = axios.get(geourl).then(function (response) {
-        lat = parseFloat(response.data.latitude);
-        long = parseFloat(response.data.longitude);
-      });
-
-      datauri.format(".jpg", req.file.buffer);
+      datauri.format(".png", req.file.buffer);
 
       const file = datauri.content;
 
+      const uniqueFilename = Date.now() + req.file.originalname.split(".")[0];
+
       let dbimage;
-      let imgurl;
-      let id;
-      let user;
+      user = req.user;
       let name = req.file.originalname.split(".")[0];
       let mimetype = file.mimetype;
-      let css = file.getcss;
-
-      const uniqueFilename =
-        Date.now() + "-" + req.file.originalname.split(".")[0];
 
       cloudinary.uploader.upload(
         file,
         {
           folder: `${req.user.username}`,
-
           public_id: `${uniqueFilename}`,
           tags: `${req.user.id}`,
+          access_type: `token`,
+          location: `${location}`,
         },
         function (err, result) {
           if (err) return res.send(err);
           /*
                     console.log(result);
           */
-          const dbimage = {
+          dbimage = {
             url: result.url,
             format: result.format,
-            tags: req.user.id,
-            name: result.public_id,
-            long: long,
-            lat: lat,
+            tags: req.user.email,
+            name: uniqueFilename,
+            longdec: long,
+            latdec: lat,
+            location: [long, lat],
             user: req.user.username,
           };
 
@@ -124,10 +155,11 @@ router.post(
           });
 
           Photo.create(dbimage).then((photo) => {
-            User.findById(req.user.id).then((user) => {
-              user.photos.push(dbimage.url);
+            User.findById(req.user.id)
+            .then((user) => {
+              user.photos.push(dbimage);
               user.save().then((data) => {
-                res.json(dbimage).status(200);
+                res.json(dbimage.url).status(200);
               });
             });
           });
