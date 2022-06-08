@@ -13,7 +13,9 @@ const photoSchema = new Schema({
   name: String,
   tags: Array,
   user: String,
-  location:[Number]
+  public_id: String,
+  coordinates: [Number],
+  date: Date,
 });
 
 const Photo = mongoose.model("Photos", photoSchema);
