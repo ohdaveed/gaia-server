@@ -13,7 +13,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single("image");
 const Datauri = require("datauri");
-const datauri = new Datauri();
+// const datauri = new Datauri();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -22,10 +22,8 @@ cloudinary.config({
   secure: true,
 });
 
-let long, lat, location, id, user
 
-const geourl =
-  "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
+
 
 // gets all photos from a user
 router.get(
@@ -95,21 +93,24 @@ router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
   function (req, res) {
+
+    let long, lat, location, id, user;
+
     upload(req, res, function (err) {
       if (err) {
         return res.send(err);
       }
 
-      // const geourl =
-      // "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
-      
+      const geourl = "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
-        location = axios.get(geourl).then(function (response) {
-          [
-            (lat = parseFloat(response.data.latitude)),
-            (long = parseFloat(response.data.longitude)),
-          ];
-        });
+      location = axios.get(geourl).then(function (response) {
+        [
+          (lat = parseFloat(response.data.latitude)),
+          (long = parseFloat(response.data.longitude)),
+        ];
+      });
+
+      const datauri = new Datauri()
 
       datauri.format(".png", req.file.buffer);
 
@@ -126,41 +127,34 @@ router.post(
         file,
         {
           folder: `${req.user.username}`,
-          public_id: `${uniqueFilename}`,
           tags: `${req.user.id}`,
           access_type: `token`,
-          location: `${location}`,
         },
         function (err, result) {
           if (err) return res.send(err);
-          /*
-                    console.log(result);
-          */
+
+          console.log(result);
+
+          let imgurl = result.url;
+
           dbimage = {
             url: result.url,
-            format: result.format,
-            tags: req.user.email,
-            name: uniqueFilename,
+            name: `${uniqueFilename}`,
             longdec: long,
             latdec: lat,
-            location: [long, lat],
+            public_id: result.public_id,
+            coordinates: [long, lat],
+            date: Date(),
             user: req.user.username,
           };
-
-          imgurl = result.url;
-
           User.findById(req.user.id).then((user) => {
             user.photos.push(dbimage.url);
-            user.save().then(console.log(dbimage));
+            user.save();
           });
 
           Photo.create(dbimage).then((photo) => {
-            User.findById(req.user.id)
-            .then((user) => {
-              user.photos.push(dbimage);
-              user.save().then((data) => {
-                res.json(dbimage.url).status(200);
-              });
+            photo.save().then((data) => {
+              res.json(dbimage).status(200);
             });
           });
         }
