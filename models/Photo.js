@@ -6,15 +6,21 @@ const photoSchema = new Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: 'User',
     },
-    url: String,
+    public_id: String,
+    photo_url: String,
     plant_name: Array,
     latdec: Number,
     longdec: Number,
-    name: String,
+    delete_token: String,
+    date: Date,
     user: String,
-    tags: Array,
+    tags: {
+            type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
+    },
     user: String,
-    date_created: { type: Date, default: Date.now },
+    signature: String,
+    date_created: { type: Date}
 });
 
 const Photo = mongoose.model('Photos', photoSchema);
