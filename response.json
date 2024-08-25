@@ -1,0 +1,50 @@
+{
+  "asset_id": "d30bec79252c1a3bc0ba093b26ab9a9f",
+  "public_id": "gaia_data/aohh2cuawbvz35r8epao",
+  "version": 1654730298,
+  "version_id": "d3be3098f663fd8a1db12924bb0cdf9a",
+  "signature": "46a8eb58dd6215226e1e96e112e0b970d150693d",
+  "width": 3024,
+  "height": 4032,
+  "format": "jpg",
+  "resource_type": "image",
+  "created_at": "2022-06-08T23:18:18Z",
+  "tags": [
+    "gaia",
+    "investigation",
+    "plant"
+  ],
+  "pages": 1,
+  "bytes": 2869171,
+  "type": "upload",
+  "etag": "1a89e68383966eba97cc8aad522ecc4d",
+  "placeholder": false,
+  "url": "http://res.cloudinary.com/darrizon/image/upload/v1654730298/gaia_data/aohh2cuawbvz35r8epao.jpg",
+  "secure_url": "https://res.cloudinary.com/darrizon/image/upload/v1654730298/gaia_data/aohh2cuawbvz35r8epao.jpg",
+  "folder": "gaia_data",
+  "access_mode": "public",
+  "image_metadata": {
+    "JFIFVersion": "1.01",
+    "ResolutionUnit": "inches",
+    "XResolution": "72",
+    "YResolution": "72",
+    "ProfileDescription": "sRGB IEC61966-2.1",
+    "Colorspace": "RGB",
+    "DPI": "72"
+  },
+  "illustration_score": 0,
+  "semi_transparent": false,
+  "grayscale": false,
+  "eager": [
+    {
+      "transformation": "c_fit,e_improve,f_auto,q_auto,r_4,w_535",
+      "width": 535,
+      "height": 713,
+      "bytes": 93525,
+      "format": "jpg",
+      "url": "http://res.cloudinary.com/darrizon/image/upload/c_fit,e_improve,f_auto,q_auto,r_4,w_535/v1654730298/gaia_data/aohh2cuawbvz35r8epao.jpg",
+      "secure_url": "https://res.cloudinary.com/darrizon/image/upload/c_fit,e_improve,f_auto,q_auto,r_4,w_535/v1654730298/gaia_data/aohh2cuawbvz35r8epao.jpg"
+    }
+  ],
+  "delete_token": "f57cc23c6d2aa80bbe8298dea6f3e3b7d6243329cee60591c39f7a9630fbd1947293cb5044c35a65c5a23bddd94e9b9666f036de259dbd4d2879d0fbad9f4a1680c204add4be5a4fe53fd719a5df3268ae01a9eacc202e3c4449cb0918dae1071dee57206458915cb82fcdaa05fc2048dd8f6e3914f65f5570266a65bc029b3b7ffa477c5b95dab9020aa15d8baec187"
+}

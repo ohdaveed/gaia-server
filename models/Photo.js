@@ -2,19 +2,25 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const photoSchema = new Schema({
-    userid: {
+    user_id: {
         type: mongoose.Schema.Types.ObjectID,
         ref: 'User',
     },
-    url: String,
+    public_id: String,
+    photo_url: String,
     plant_name: Array,
-    lat: Number,
-    long: Number,
-    name: String,
+    latdec: Number,
+    longdec: Number,
+    delete_token: String,
+    date: Date,
     user: String,
-    tags: Array,
+    tags: {
+            type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
+    },
     user: String,
-    date_created: { type: Date, default: Date.now },
+    signature: String,
+    date_created: { type: Date}
 });
 
 const Photo = mongoose.model('Photos', photoSchema);

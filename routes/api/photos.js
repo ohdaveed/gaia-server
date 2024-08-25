@@ -1,138 +1,140 @@
 const express = require("express");
 const router = express.Router();
+
+const jwt = require("jsonwebtoken");
 const Photo = require("../../models/Photo");
 const axios = require("axios");
 const User = require("../../models/User");
-// const fs = require("fs");
-const Datauri = require("datauri");
-const datauri = new Datauri();
-
+const keys = require("../../config/keys");
 const passport = require("passport");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+const fileUpload = require("express-fileupload");
+const { upload } = require("../../config/cloudinary");
+
+// cloudinary.config({
+
+//     cloud_name: process.env.CLOUD_NAME,
+//     api_key: process.env.CLOUDINARY_API_KEY,
+//     api_secret: process.env.CLOUDINARY_SECRET
+
+// })
 
 // MULTER
 const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).single("image");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    console.log(file);
+    cb(null, file.originalname);
+  },
+});
 
 // gets all photos from a user
 router.get(
   "/all",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    let user = req.user.id
-    Photo.find()
-      .where(user)
-      .then(photos => res.json(photos))
-      .catch(err => res.status(404).json({ nophotosfound: "No photos found" }));
+    const user = { username: req.user.username };
+
+    Photo.find().where(user)
+      .then((photos) => res.json(photos))
+      .catch((err) =>
+        res.status(404).json({ nophotosfound: "No photos found" })
+      );
   }
 );
 
-//Photo test route
-router.get("/", passport.authenticate("jwt", { session: false }), function(
-  req,
-  res
-) {
-  res.send("photo route testing!");
-});
-
-// Delete photo by id
-router.delete(
-  "/:id",
+router.get(
+  "/",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    Photo.findByIdAndRemove(req.params.id).then(photo => {
-      res.json({ message: "photo deleted" }).status(200);
-    });
+  function (req, res) {
+    res.send("photo route testing!");
   }
 );
 
-// Photo upload to cloudinary
 router.post(
   "/upload",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
-    upload(req, res, function(err) {
-      if (err) {
-        return res.send(err);
-      }
 
-      // console.log(req.file);
+  async (req, res) => {
+    const upload = multer({ storage }).single("image");
 
-      const cloudinary = require("cloudinary").v2;
-
-      cloudinary.config({
-        cloud_name: process.env.CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_SECRET
-      });
+    upload(req, res, function (err) {
+      if (err) return res.send(err);
 
       const geourl =
         "https://api.ipgeolocation.io/ipgeo?apiKey=" + process.env.GEO_API;
 
       let long, lat;
-      let location = axios.get(geourl).then(function(response) {
+
+      const location = axios.get(geourl).then(function (response) {
         lat = parseFloat(response.data.latitude);
         long = parseFloat(response.data.longitude);
       });
 
-      datauri.format(".png", req.file.buffer);
-
-      const file = datauri.content;
+      const path = req.file.path;
+      const uniqueFilename = new Date().toISOString();
 
       let dbimage;
       let imgurl;
-      let id;
-      let user;
-      let name = req.file.originalname.split(".")[0];
-      let mimetype = datauri.mimetype;
-      let css = datauri.getcss;
-
-      const uniqueFilename =
-        Date.now() + "-" + req.file.originalname.split(".")[0];
 
       cloudinary.uploader.upload(
-        file,
-        {
-          folder: `${req.user.username}`,
+        path,{ public_id: `${req.user.id}/${uniqueFilename}`, tags: `${location}` }, // directory and tags are optional
+          function (err, image) {
+            if (err) return res.send(err);
+              
+            fs.unlinkSync(path);
 
-          public_id: `${uniqueFilename}`,
-          tags: `${req.user.id}`
-        },
-        function(err, result) {
-          if (err) return res.send(err);
-
-          console.log(result);
-
-          const dbimage = {
-            url: result.url,
-            format: result.format,
-            tags: req.user.id ,
-            name: result.public_id,
-            long: long,
-            lat: lat,
-            user: req.user.username,
-
-          };
-
-          imgurl = result.url;
-
-          User.findById(req.user.id).then(user => {
-            user.url.push(dbimage.url);
-            user.save().then(console.log(dbimage));
-          });
+            const dbimage = {
+              url: image.url,
+              name: image.original_filename,
+              lat: location.lat,
+              long: location.long,
+              location: image.location,
+              username: req.user.username,
+             };
 
           Photo.create(dbimage).then(photo => {
-            User.findById(req.user.id).then(user => {
-              user.photos.push(photo.id);
-              user.save().then(data => {
-                res.json(dbimage).status(200);
-              });
-            });
+            // User.findById(req.user.id).then((user) => {
+            //   user.photos.push(photo.id);
+            //   user.save().then((data) => {
+            //     cole.log("The upload was a success.");
+             return res.json(photo);
           });
         }
       );
     });
   }
 );
+
+router.post("/add-image", async (req, res) => {
+  if (!req.files) return res.send("Please upload an image");
+
+  const { image } = req.files;
+  const fileTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+  if (!fileTypes.includes(image.mimetype))
+    return res.send("Image formats supported: JPG, PNG, JPEG");
+
+  const cloudFile = await upload(image.tempFilePath);
+  // console.log(cloudFile)
+  // console.log('This is the cloudfile')
+
+  let photo = new Photo({
+    user_id: req.user,
+    public_id: cloudFile.public_id,
+    photo_url: cloudFile.url,
+    delete_token: cloudFile.delete_token,
+    signature: cloudFile.signature,
+    date: cloudFile.created_at,
+  });
+
+  photo.save(photo);
+
+  return res.status(201).json(photo);
+});
 
 module.exports = router;

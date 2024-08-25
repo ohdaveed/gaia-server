@@ -17,9 +17,14 @@ const UserSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	portfolio: {
+		    type: mongoose.Schema.Types.ObjectID,
+        ref: 'Photo',
+	},
 	treks: [{}],
-	photos: [],
-	plants: [{}],
+	photos: [{}],
+	plants: [{}]
+	
 });
 
 const User = mongoose.model("User", UserSchema);
